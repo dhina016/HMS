@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="msg">
+    </div>
+  <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                {% from "includes/_formhelper.html" import render_field %}
+                <form class="custom-validation" name="updatepatient" action="" method="post" novalidate>
+                   {{  form.hidden_tag() }}
+                    <div data-repeater-list="outer-group" class="outer">
+                        <div data-repeater-item class="outer">
+                            <div class="form-group">
+                                {{ render_field( form.medicinename, placeholder="Enter Medicine Name", class_="form-control" ) }}
+                            </p>
+                         </div>
+
+                        <div class="form-group">
+                            {{ render_field(form.quantity, placeholder="Enter Quantity", class_="form-control") }}
+                        </div>
+                        <div class="form-group">
+                            {{ render_field(form.rate, placeholder="Enter Rate", class_="form-control") }}
+                        </div>
+                            <div id='sub'>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<script>
+       $(document).ready(function(){
+        $("#medicinename").on('change', () => {
+            $.ajax({
+                type: "GET",
+                url: "getmedicinedetail",
+                dataType: "json",
+                data: { mname: $('#medicinename').val() },
+                beforeSend: function() {},
+                success: (response) => {
+                    console.log(response)
+                    if(response != null){
+                        $('#patientname').val(response.patientname)
+                        $('#address').val(response.address)
+                        $('#age').val(response.age)
+                        $('#status').val(response.status)
+                        $('#sub').html('<button type="submit"  class="btn btn-primary">Submit</button>')
+                        $('#msg').html('<div class="alert alert-success" role="alert">Yes, Found</div>')
+                    } else {
+                        $('#msg').html('<div class="alert alert-danger" role="alert">Patient Not Found</div>')
+                        $('#sub').html('')
+                        console.log()
+                    }
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+        })
+ 
+        });
+     });
+
+       </script>
+       
+
+{% endblock %}

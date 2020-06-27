@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, request, render_template, flash, redirect, url_for, session, logging, jsonify
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
-from form import LoginForm, CreatePatient, UpdatePatient, DeletePatient
+from form import LoginForm, CreatePatient, UpdatePatient, DeletePatient, Medicine, DeleteMedicine
 
 
 app = Flask(__name__)
@@ -69,7 +69,7 @@ def logout():
     session.pop('permission',False)
     session.pop('username',False)
     session.pop('userlevel',False)
-    return jsonify('success')
+    return redirect(url_for('login'))
 
 
 #dashboard
@@ -118,7 +118,6 @@ def createpatient():
     else:
         flash('Access Denied', 'danger')
         return redirect(url_for('logout'))
-
 
 
 #Customer section
@@ -224,6 +223,133 @@ def getpatientdetail():
         if  (session.get('userlevel') == 'ade'):
             cur = mysql.connection.cursor()
             cur.execute("SELECT * from patient where patientid = %s AND isDel = '0'", [ request.args.get('pid') ])
+            detail = cur.fetchone()
+            return jsonify(detail)
+        else:
+            return jsonify(None)
+    else:
+        return jsonify(None)
+
+#medicine
+
+#Customer section
+@app.route('/createmedicine',methods=["GET","POST"])
+def createmedicine():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'pharmacist':
+            title = ['Create Medicine', 'This is Create Medicine', '']  
+            form = Medicine()
+            cur = mysql.connection.cursor()
+            if request.method == 'POST' and form.validate():
+                medicinename = request.form['medicinename']
+                quantity = request.form['quantity']
+                rate = request.form['rate']
+                checkpatient = cur.execute("select medicinename from medicine where medicinename = %s ",[medicinename])
+                if checkpatient  == False:
+                    if(cur.execute('''Insert into medicine (medicinename, quantity, rate) VALUES (%s, %s, %s)''', ( medicinename, quantity, rate ))):
+                        mysql.connection.commit()
+                        cur.close()
+                        flash('Created Successfully!!', 'success')
+                        return redirect(url_for('createmedicine'))
+                    else:
+                        flash('Something went wrong', 'danger')
+                        return redirect(url_for('createmedicine'))
+                else:
+                    flash('Medicine already exist', 'danger')
+                    return redirect(url_for('createmedicine'))
+            return render_template('createmedicine.html',title=title,form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+
+#Customer section
+@app.route('/updatemedicine',methods=["GET","POST"])
+def updatemedicine():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'pharmacist':
+            title = ['Update Patient', 'This is create Patient', '']  
+            form = Medicine()
+            cur = mysql.connection.cursor()
+            if request.method == 'POST' and form.validate():
+                medicinename = request.form['medicinename']
+                quantity = request.form['quantity']
+                rate = request.form['rate']
+                check = cur.execute("UPDATE medicine SET quantity = %s, rate = %s where medicinename = %s", ( quantity, rate, medicinename))
+                if(check):
+                    mysql.connection.commit()
+                    cur.close()
+                    flash('Updated Successfully!!', 'success')
+                    return redirect(url_for('updatemedicine'))
+                else:
+                    flash('Something went wrong', 'danger')
+                    return redirect(url_for('updatemedicine'))
+            return render_template('updatemedicine.html',title=title,form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+#Customer section
+@app.route('/deletemedicine',methods=["GET","POST"])
+def deletemedicine():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'pharmacist':
+            title = ['Delete Patient', 'This is Delete Patient', '']  
+            form = DeleteMedicine()
+            cur = mysql.connection.cursor()
+            if request.method == 'POST' and form.validate():
+                medicinename = request.form['medicinename']
+                check = cur.execute("UPDATE medicine SET isDel = %s where medicinename = %s", ( '1', medicinename))
+                if(check):
+                    mysql.connection.commit()
+                    cur.close()
+                    flash('Deleted Successfully!!', 'success')
+                    return redirect(url_for('deletemedicine'))
+                else:
+                    flash('Something went wrong', 'danger')
+                    return redirect(url_for('deletemedicine'))
+
+            return render_template('deletemedicine.html',title=title,form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+#Customer section
+@app.route('/viewmedicine',methods=["GET","POST"])
+def viewmedicine():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'pharmacist':
+            title = ['View Patient', 'This is View Patient', ''] 
+            cur = mysql.connection.cursor()
+            cur.execute("select * from medicine where isDel = '0' ")
+            detail = cur.fetchall()
+            return render_template('viewmedicine.html',title=title, detail=detail)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+@app.route('/getmedicinedetail',methods=["GET"])
+def getmedicinedetail():
+    if session.get('logged_in'):
+        if  (session.get('userlevel') == 'pharmacist'):
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * from medicine where medicinename = %s AND isDel = '0'", [ request.args.get('mname') ])
             detail = cur.fetchone()
             return jsonify(detail)
         else:

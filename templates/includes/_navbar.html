@@ -56,6 +56,38 @@
                                     </a>
                                 </li>
                             {% endif %}
+                            {% if session['userlevel'] == 'pharmacist' %}
+                                <li>
+                                    <a href="{{  url_for('createmedicine')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Create Medicine</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'pharmacist' %}
+                                <li>
+                                    <a href="{{  url_for('updatemedicine')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Update Medicine</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'pharmacist' %}
+                                <li>
+                                    <a href="{{  url_for('deletemedicine')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Delete Medicine</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'pharmacist' %}
+                                <li>
+                                    <a href="{{  url_for('viewmedicine')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>View Medicine</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
                     <!-- Sidebar -->

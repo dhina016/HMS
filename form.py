@@ -29,3 +29,11 @@ class UpdatePatient(FlaskForm):
 
 class DeletePatient(FlaskForm):
     patientid = IntegerField("Patient ID", [validators.DataRequired(message="Patient ID is Required"), validators.NumberRange(message='ID should be exactly 9', min=100000000, max=999999999) ])
+
+class Medicine(FlaskForm):
+    quantity = IntegerField("Quantity", [validators.DataRequired(message="Quantity is Required"), validators.NumberRange(message='Minimum 1', min=1, max=999999999 ) ])
+    rate = IntegerField("Rate", [validators.DataRequired(message="Rate is Required"), validators.NumberRange(message='Minimum 1', min=1, max=999999999 ) ])
+    medicinename = StringField("Name", [ validators.DataRequired(message="Name is Required") ])
+
+class DeleteMedicine(FlaskForm):
+    medicinename = StringField("Name", [ validators.DataRequired(message="Name is Required") ])

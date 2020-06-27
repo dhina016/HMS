@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>Medicine Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Price</th>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                {% for data in detail %}
+                                                  <tr>
+                                                    <td>{{ data.medicinename }}</td>
+                                                    <td>{{ data.quantity }}</td>
+                                                    <td>{{ data.rate }}</td>
+                                                </tr>
+                                                {%  endfor %}
+                                                </tbody>
+                                            </table>
+    
+                                        </div>
+                                    </div>
+                                </div> <!-- end col -->
+                            </div> <!-- end row -->
+
+
+
+{% endblock %}
