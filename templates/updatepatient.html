@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="msg">
+    </div>
+  <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                {% from "includes/_formhelper.html" import render_field %}
+                <form class="custom-validation" name="updatepatient" action="" method="post" novalidate>
+                   {{  form.hidden_tag() }}
+                    <div data-repeater-list="outer-group" class="outer">
+                        <div data-repeater-item class="outer">
+                            <div class="form-group">
+                                    {{ render_field( form.patientid, placeholder="Enter Patient ID", class_="form-control" ) }}
+                                </p>
+                             </div>
+
+                            <div class="form-group">
+                                {{ render_field(form.patientname, placeholder="Enter Name", class_="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.age, placeholder="Enter Age", class_="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ render_field(form.address, placeholder="Enter Address", class_="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                <label for="formcust_address">Status</label>
+                                <select class="form-control" name="pstatus" id="pstatus" required>
+                                    <option value="active">Active</option>
+                                    <option value="discharged">Discharged</option>
+                                </select>
+                        </div>
+                            <div id='sub'>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<script>
+    $(document).ready(function(){
+
+        load_state('state');
+        initial = '<option value="">Select City</option>';
+        $('#city').html(initial);
+        $('#state').prop('required',true);
+        $('#city').prop('required',true);
+        function load_state(id, parent_id)
+        {
+         var html_code = '';
+         $.getJSON('static/sd.json', function(data){
+       
+          html_code += '<option value="">Select '+id+'</option>';
+          $.each(data, function(key, value){
+           if(id == 'state')
+           {
+             html_code += '<option value="'+value.state+'">'+value.state+'</option>';
+           }
+          });
+          $('#'+id).html(html_code);
+         });
+        }
+       
+        function load_city(id, parent_id)
+        {
+         var html_code = '';
+         $.getJSON('static/sd.json', function(data){
+       
+          html_code += '<option value="">Select '+id+'</option>';
+          $.each(data, function(key, value){
+              if(parent_id == value.state)
+              {
+            $.each(value.districts, (index, value1)=>{
+                html_code += '<option value="'+value1+'">'+value1+'</option>';
+            })
+           }
+          });
+          $('#'+id).html(html_code);
+         });
+        }
+       
+        $(document).on('change', '#state', function(){
+         var state_id = $(this).val();
+         if(state_id != '')
+         {
+            load_city('city', state_id);
+         }
+         else
+         {
+          $('#city').html('<option value="">Select city</option>');
+         }
+        });
+
+       });
+
+       $(document).ready(function(){
+        $("#patientid").on('change', () => {
+            $.ajax({
+                type: "GET",
+                url: "getpatientdetail",
+                dataType: "json",
+                data: { pid: $('#patientid').val() },
+                beforeSend: function() {},
+                success: (response) => {
+                    console.log(response)
+                    if(response != null){
+                        $('#patientname').val(response.patientname)
+                        $('#address').val(response.address)
+                        $('#age').val(response.age)
+                        $('#status').val(response.status)
+                        $('#sub').html('<button type="submit"  class="btn btn-primary">Submit</button>')
+                        $('#msg').html('<div class="alert alert-success" role="alert">Yes, Found</div>')
+                    } else {
+                        $('#msg').html('<div class="alert alert-danger" role="alert">Patient Not Found</div>')
+                        $('#sub').html('')
+                        console.log()
+                    }
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+        })
+ 
+        });
+     });
+
+       </script>
+       
+
+{% endblock %}

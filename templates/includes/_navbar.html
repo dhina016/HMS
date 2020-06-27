@@ -1,0 +1,69 @@
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="vertical-menu">
+
+                <div data-simplebar class="h-100">
+
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+                        <!-- Left Menu Start -->
+                        <ul class="metismenu list-unstyled" id="side-menu">
+                            <li class="menu-title">{{ session['permission'] }}</li>
+
+                            <li>
+                                <a href="{{  url_for('dashboard')}}" class="waves-effect">
+                                    <i class="ti-home"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                            {% if session['userlevel'] == 'ade' %}
+                                <li>
+                                    <a href="{{  url_for('createpatient')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Create Patient</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'ade' %}
+                                <li>
+                                    <a href="{{  url_for('updatepatient')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Update Patient</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'ade' %}
+                                <li>
+                                    <a href="{{  url_for('deletepatient')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Delete Patient</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'ade' %}
+                                <li>
+                                    <a href="{{  url_for('viewpatient')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>View Patient</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if session['userlevel'] == 'ade' %}
+                                <li>
+                                    <a href="{{  url_for('singlepatient')}}" class="waves-effect">
+                                        <i class="ti-home"></i>
+                                        <span>Single Patient</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <!-- Sidebar -->
+                </div>
+            </div>
+            <!-- Left Sidebar End -->
+
+            <div class="main-content">
+
+                <div class="page-content">
+                    <div class="container-fluid">

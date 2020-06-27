@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+
+                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>SSN ID</th>
+                                                    <th>Patient ID</th>
+                                                    <th>Name</th>
+                                                    <th>Age</th>
+                                                    <th>Address</th>
+                                                    <th>DOJ</th>
+                                                    <th>Room Type</th>
+                                                </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                {% for data in detail %}
+                                                  <tr>
+                                                    <td>{{ data.ssnid }}</td>
+                                                    <td>{{ data.patientid }}</td>
+                                                    <td>{{ data.patientname }}</td>
+                                                    <td>{{ data.age }}</td>
+                                                    <td>{{ data.address }}</td>
+                                                    <td>{{  (data.doj).strftime('%Y-%m-%d') }}</td>
+                                                    <td>{{  data.type }}</td>
+                                                </tr>
+                                                {%  endfor %}
+                                                </tbody>
+                                            </table>
+    
+                                        </div>
+                                    </div>
+                                </div> <!-- end col -->
+                            </div> <!-- end row -->
+
+
+
+{% endblock %}

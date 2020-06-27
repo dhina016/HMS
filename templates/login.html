@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+    <!-- Bootstrap Css -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="{{ url_for('static', filename='css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{{ url_for('static', filename='css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+    <div class="account-pages my-5 pt-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">     
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} bg-{{ category }} text-white border-0" role="alert"><strong>{{ message }}</strong> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    <div class="card overflow-hidden">
+                        <div class="bg-primary">
+                            <div class="text-primary text-center p-4">
+                                <h5 class="text-white font-size-20">Welcome to Retail Banking</h5>
+                                <h6 class="text-white font-size-15">{{ usertype }}</h6>
+                                <a href="" class="logo logo-admin">
+                                    <img src="{{ url_for('static', filename='images/logo-sm.png') }}" height="24" alt="logo">
+                                </a>
+                            </div>
+                        </div>
+
+                        {% from "includes/_formhelper.html" import render_field, render_checkbox %}
+
+                        <div class="card-body p-4">
+                            <div class="p-3">
+                                <form class="custom-validation" action="login" method="post" novalidate>
+
+                                    <div class="form-group">
+                                        {{ render_field(form.username, placeholder="Enter user Name", class_="form-control") }}
+                                        {% if form.username.errors %}
+                                            {{ error }}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-group">
+                                        {{ render_field(form.password, placeholder="Enter Password", class_="form-control") }}
+                                        {% if form.password.errors %}
+                                        {{ error }}
+                                    {% endif %}
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-primary w-md waves-effect waves-light" type="submit">Log In</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mt-2 mb-0 row">
+  
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{{ url_for('static', filename='libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/metismenu/metisMenu.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='libs/node-waves/waves.min.js') }}"></script>
+
+    
+    <script src="{{ url_for('static', filename='libs/parsleyjs/parsley.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/pages/form-validation.init.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="msg">
+    </div>
+  <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                {% from "includes/_formhelper.html" import render_field %}
+                <form class="custom-validation" name="updatepatient" action="" method="post" novalidate>
+                   {{  form.hidden_tag() }}
+                    <div data-repeater-list="outer-group" class="outer">
+                        <div data-repeater-item class="outer">
+                            <div class="form-group">
+                                    {{ render_field( form.patientid, placeholder="Enter Patient ID", class_="form-control" ) }}
+                                </p>
+                             </div>   
+                        </div>
+                            <div id='sub'>
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-3">SSN ID</dt>
+                                    <dd id="sid" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">Patient ID</dt>
+                                    <dd id="pid" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">Patient Name</dt>
+                                    <dd id="pn" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">Age</dt>
+                                    <dd id="age" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">Address</dt>
+                                    <dd id="add" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">DOJ</dt>
+                                    <dd id="doj" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">Room Type</dt>
+                                    <dd id="rtype" class="col-sm-9"></dd>
+                                    <dt class="col-sm-3">Status</dt>
+                                    <dd id="tstatus" class="col-sm-9"></dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+
+<script>
+       $(document).ready(function(){
+        $("#patientid").on('change', () => {
+            $.ajax({
+                type: "GET",
+                url: "getpatientdetail",
+                dataType: "json",
+                data: { pid: $('#patientid').val() },
+                beforeSend: function() {},
+                success: (response) => {
+                    if(response != null){
+                        $('#sid').text(response.ssnid)
+                        $('#pid').text(response.patientid)
+                        $('#pn').text(response.patientname)
+                        $('#add').text(response.address)
+                        $('#age').text(response.age)
+                        $('#doj').text(moment(response.doj).format("MMMM Do YYYY"))
+                        $('#rtype').text(response.type)
+                        $('#tstatus').text(response.status)
+                        $('#msg').html('<div class="alert alert-success" role="alert">Yes, Found</div>')
+                    } else {
+                        $('#sid').text('')
+                        $('#pid').text('')
+                        $('#pn').text('')
+                        $('#add').text('')
+                        $('#age').text('')
+                        $('#doj').text('')
+                        $('#rtype').text('')
+                        $('#tstatus').text('')
+                        $('#msg').html('<div class="alert alert-danger" role="alert">Patient Not Found</div>')
+                    }
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+        })
+ 
+        });
+     });
+
+       </script>
+       
+
+{% endblock %}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Retail Banking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo-sm.png') }}"/>
+
+
+        <!-- DataTables -->
+        <link href="{{ url_for( 'static', filename='libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' )}}" rel="stylesheet" type="text/css" />
+        <link href="{{ url_for( 'static', filename='libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' )}}" rel="stylesheet" type="text/css" />
+
+        <!-- Responsive datatable examples -->
+        <link href="{{ url_for( 'static', filename='libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' )}}" rel="stylesheet" type="text/css" />    
+        
+        <!-- Sweet Alert-->
+        <link href="{{ url_for( 'static', filename='libs/sweetalert2/sweetalert2.min.css' )}}" rel="stylesheet" type="text/css" />
+
+        <!-- Bootstrap Css -->
+        <link href="{{ url_for( 'static', filename='css/bootstrap.min.css' )}}" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="{{ url_for( 'static', filename='css/icons.min.css' )}}" rel="stylesheet" type="text/css" />
+        
+        <link href="{{ url_for( 'static', filename='libs/select2/css/select2.min.css' )}}" rel="stylesheet" type="text/css" />
+        <link href="{{ url_for( 'static', filename='libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css' )}}" rel="stylesheet">
+        <link href="{{ url_for( 'static', filename='libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' )}}" rel="stylesheet" />
+        <link href="{{ url_for( 'static', filename='libs/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css' )}}" rel="stylesheet">
+        
+        <!-- App Css-->
+        <link href="{{ url_for( 'static', filename='css/app.min.css' )}}" id="app-style" rel="stylesheet" type="text/css" />
+        
+    
+        <script src="{{ url_for('static', filename='libs/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/metismenu/metisMenu.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/simplebar/simplebar.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/node-waves/waves.min.js') }}"></script>
+
+    
+  </head>
+
+  <body data-sidebar="dark">
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+
+      {% include 'includes/_header.html' %} 
+      
+      {% include 'includes/_navbar.html' %} 
+      
+      {% include 'includes/_title.html' %} 
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} bg-{{ category }} text-white border-0" role="alert"><strong>{{ message }}</strong> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+      {% block content %} {% endblock %}
+
+      {% include 'includes/_footer.html' %}
+
+
+       <!-- JAVASCRIPT -->
+
+        <script src="{{ url_for('static', filename='libs/parsleyjs/parsley.min.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='js/pages/moment.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/pages/form-validation.init.js') }}"></script>
+
+
+        <!-- Peity chart-->
+        <script src="{{ url_for('static', filename='libs/peity/jquery.peity.min.js') }}"></script>
+
+       <!--Morris Chart-->
+       <script src="{{ url_for('static', filename='libs/morris.js/morris.min.js') }}"></script>
+       <script src="{{ url_for('static', filename='libs/raphael/raphael.min.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='js/pages/dashboard.init.js') }}"></script>
+
+         <!-- Required datatable js -->
+         <script src="{{ url_for('static', filename='libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+         <!-- Buttons examples -->
+         <script src="{{ url_for('static', filename='libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/jszip/jszip.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/pdfmake/build/pdfmake.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/pdfmake/build/vfs_fonts.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+         <!-- Responsive examples -->
+         <script src="{{ url_for('static', filename='libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+ 
+         <script src="{{ url_for('static', filename='libs/select2/js/select2.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/admin-resources/bootstrap-filestyle/bootstrap-filestyle.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='libs/bootstrap-maxlength/bootstrap-maxlength.min.js') }}"></script>
+
+         
+         <script src="{{ url_for('static', filename='js/pages/form-advanced.init.js') }}"></script>
+
+
+         <!-- Datatable init js -->
+         <script src="{{ url_for('static', filename='js/pages/datatables.init.js') }}"></script>
+         <script src="{{ url_for('static', filename='libs/sweetalert2/sweetalert2.min.js') }}"></script>
+ 
+         <!-- Sweet alert init js-->
+         <script src="{{ url_for('static', filename='js/pages/sweet-alerts.init.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+{% if(title[0] == 'Dashboard') %}      
+<script>
+
+  !(function (e) {
+      "use strict";
+      function a() {}
+        (a.prototype.createDonutChart = function (e, a, r) {
+          Morris.Donut({ element: e, data: a, resize: !0, colors: r });
+        }),
+        (a.prototype.createStackedChart = function (e, a, r, t, i, o) {
+          Morris.Bar({
+            element: e,
+            data: a,
+            xkey: r,
+            ykeys: t,
+            stacked: !0,
+            labels: i,
+            hideHover: "auto",
+            barSizeRatio: 0.4,
+            resize: !0,
+            gridLineColor: "rgba(108, 120, 151, 0.1)",
+            barColors: o,
+          });
+        }),
+        (a.prototype.init = function () {
+          this.createDonutChart(
+        "morris-donut-example",
+        [
+          { label: "{{ detail[0].t }}", value: "{{ detail[0].total }}" },
+          { label: "{{ detail[1].t }}", value: "{{ detail[1].total }}" },
+          { label: "{{ detail[2].t }}", value: "{{ detail[2].total }}" },
+        ],
+        ["#00ff00", "#3c4ccf", "#02a499"]
+      );
+        }),
+        (e.MorrisCharts = new a()),
+        (e.MorrisCharts.Constructor = a);
+    })(window.jQuery),
+      (function () {
+        "use strict";
+        window.jQuery.MorrisCharts.init();
+      })();
+
+</script>
+{% endif %}
+
+    </body>
+
+</html>
