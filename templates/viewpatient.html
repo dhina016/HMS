@@ -16,6 +16,7 @@
                                                     <th>Address</th>
                                                     <th>DOJ</th>
                                                     <th>Room Type</th>
+                                                    <th>Status</th>
                                                     {% if session['userlevel'] == 'ade' %}
                                                     <th>Action</th>
                                                     {% endif %}
@@ -31,10 +32,11 @@
                                                     <td>{{ data.age }}</td>
                                                     <td>{{ data.address }}</td>
                                                     <td>{{  (data.doj).strftime('%Y-%m-%d') }}</td>
-                                                    <td>{{  data.type }}</td>
+                                                    <td><span class="badge badge-{% if(data.type=='single') %}dark{% elif(data.type=='semi') %}warning{% else %}danger{% endif %}">{{  data.type }}</span></td>
+                                                    <td><span class="badge badge-{% if(data.status=='active') %}info{% else %}success{% endif %}">{{  data.status }}</span></td>
                                                     {% if session['userlevel'] == 'ade' %}
                                                     <td>
-                                                        <button type="button" class="btn btn-warning waves-effect waves-light" onclick="window.location='generatebill/{{ data.patientid }}'"><i class="fas fa-pencil-alt" onclick="return false;"></i></button> 
+                                                        <button type="button" class="btn btn-success waves-effect waves-light" onclick="window.location='generatebill/{{ data.patientid }}'"><i class="fa fa-print" onclick="return false;"></i></button> 
                                                     </td>
                                                     {% endif %}
                                                 </tr>

@@ -73,7 +73,7 @@
                 type: "GET",
                 url: "getpatientdetail",
                 dataType: "json",
-                data: { mname: $('#patientid').val() },
+                data: { pid: $('#patientid').val() },
                 beforeSend: function() {
                     $.ajax({
                         type: "GET",

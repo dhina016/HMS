@@ -93,7 +93,7 @@ def dashboard():
 def createpatient():
     if session.get('logged_in'):
         if session.get('userlevel') == 'ade':
-            title = ['Create PAtient', 'This is create Patient', '']  
+            title = ['Create Patient', 'This is create Patient', '']  
             form = CreatePatient()
             cur = mysql.connection.cursor()
             if request.method == 'POST' and form.validate():
@@ -134,7 +134,7 @@ def createpatient():
 def updatepatient():
     if session.get('logged_in'):
         if session.get('userlevel') == 'ade':
-            title = ['Update Patient', 'This is create Patient', '']  
+            title = ['Update Patient', 'This is update Patient', '']  
             form = UpdatePatient()
             cur = mysql.connection.cursor()
             if request.method == 'POST' and form.validate():
@@ -213,7 +213,7 @@ def viewpatient():
 def singlepatient():
     if session.get('logged_in'):
         if session.get('userlevel') == 'ade' or session.get('userlevel') == 'dse':
-            title = ['View Patient', 'This is create Patient', '']
+            title = ['View Patient', 'This is View Patient', '']
             form = DeletePatient()
             return render_template('singlepatient.html',title=title, form=form)
         else:
@@ -230,6 +230,7 @@ def singlepatient():
 def generatebill(id):
     if session.get('logged_in'):
         if session.get('userlevel') == 'ade':
+            title = ['Generate Bill', 'This is Generate Bill', '']
             cur = mysql.connection.cursor()
             if request.method == 'POST':
                 id = request.form['patientid']
@@ -265,15 +266,17 @@ def generatebill(id):
             cur.execute("select * from bill where checkbill = 'not' AND patientid = %s",[id])
             bill = cur.fetchall()
             if(patient):
+                if(patient['totaldate'] <= 0):
+                    patient['totaldate'] = 1
                 if(patient['type'] == 'semi'):
                     extra['rtype'] = 'Semi sharing'
-                    extra['price'] = 4000
+                    extra['price'] = 4000.0
                 elif(patient['type'] == 'general'):
                     extra['rtype'] = 'General ward'
-                    extra['price'] = 2000
+                    extra['price'] = 2000.0
                 elif(patient['type'] == 'single'):
                     extra['rtype'] = 'Single Room'
-                    extra['price'] = 8000
+                    extra['price'] = 8000.0
                 extra['date'] = date
                 total = 0
                 for i in bill:
@@ -295,7 +298,7 @@ def getpatientdetail():
     if session.get('logged_in'):
         if(session.get('userlevel') == 'ade' or session.get('userlevel') == 'dse'):
             cur = mysql.connection.cursor()
-            cur.execute("SELECT * from patient where patientid = %s AND isDel = '0' ", [ request.args.get('mname') ])
+            cur.execute("SELECT * from patient where patientid = %s AND isDel = '0' ", [ request.args.get('pid') ])
             detail = cur.fetchone()
             return jsonify(detail)
         else:
@@ -345,7 +348,7 @@ def createmedicine():
 def updatemedicine():
     if session.get('logged_in'):
         if session.get('userlevel') == 'pharmacist':
-            title = ['Update Patient', 'This is create Patient', '']  
+            title = ['Update Medicine', 'This is Update Medicine', '']  
             form = Medicine()
             cur = mysql.connection.cursor()
             if request.method == 'POST' and form.validate():
@@ -375,7 +378,7 @@ def updatemedicine():
 def deletemedicine():
     if session.get('logged_in'):
         if session.get('userlevel') == 'pharmacist':
-            title = ['Delete Patient', 'This is Delete Patient', '']  
+            title = ['Delete Medicine', 'This is Delete Medicine', '']  
             form = DeleteMedicine()
             cur = mysql.connection.cursor()
             if request.method == 'POST' and form.validate():
@@ -404,7 +407,7 @@ def deletemedicine():
 def viewmedicine():
     if session.get('logged_in'):
         if session.get('userlevel') == 'pharmacist':
-            title = ['View Patient', 'This is View Patient', ''] 
+            title = ['View Medicine', 'This is View Medicine', ''] 
             cur = mysql.connection.cursor()
             cur.execute("select * from medicine where isDel = '0' ")
             detail = cur.fetchall()
@@ -421,7 +424,7 @@ def viewmedicine():
 def patientmedicineadd():
     if session.get('logged_in'):
         if session.get('userlevel') == 'pharmacist':
-            title = ['View Patient', 'This is View Patient', ''] 
+            title = ['Add Medcine To Patient', 'This is Add Medcine To Patient', ''] 
             cur = mysql.connection.cursor()
             cur.execute("select * from medicine where isDel = '0' AND quantity > 0")
             medicine = cur.fetchall()
@@ -446,7 +449,7 @@ def patientmedicineadd():
                         if(cur.execute('''Insert into bill (patientid, type, name, quantity, rate) VALUES (%s, %s, %s, %s, %s)''', ( val ))):
                             if(cur.execute("UPDATE medicine SET quantity = %s where medicinename = %s", ( int(rate['quantity'])-quantity, name  ))):
                                 mysql.connection.commit()
-                                flash('Added'+name, 'success')
+                                flash('Added '+name, 'success')
                             else:
                                 flash('Something Went Wrong', 'danger')
                                 return redirect(url_for('patientmedicineadd'))
@@ -519,7 +522,7 @@ def creatediagnosis():
 def updatediagnosis():
     if session.get('logged_in'):
         if session.get('userlevel') == 'dse':
-            title = ['Update Patient', 'This is create Patient', '']  
+            title = ['Update Diagnosis', 'This is Update Diagnosis', '']  
             form = Diagnosis()
             cur = mysql.connection.cursor()
             if request.method == 'POST' and form.validate():
@@ -548,7 +551,7 @@ def updatediagnosis():
 def deletediagnosis():
     if session.get('logged_in'):
         if session.get('userlevel') == 'dse':
-            title = ['Delete Patient', 'This is Delete Patient', '']  
+            title = ['Delete Diagnosis', 'This is Delete Diagnosis', '']  
             form = DeleteDiagnosis()
             cur = mysql.connection.cursor()
             if request.method == 'POST' and form.validate():
@@ -577,7 +580,7 @@ def deletediagnosis():
 def viewdiagnosis():
     if session.get('logged_in'):
         if session.get('userlevel') == 'dse':
-            title = ['View Patient', 'This is View Patient', ''] 
+            title = ['View Diagnosis', 'This is View Diagnosis', ''] 
             cur = mysql.connection.cursor()
             cur.execute("select * from diagnosis where isDel = '0' ")
             detail = cur.fetchall()
@@ -594,7 +597,7 @@ def viewdiagnosis():
 def patientdiagnosisadd():
     if session.get('logged_in'):
         if session.get('userlevel') == 'dse':
-            title = ['View Patient', 'This is View Patient', ''] 
+            title = ['Add Diagnosis To Patient', 'This is Add Diagnosis To Patient', ''] 
             cur = mysql.connection.cursor()
             cur.execute("select * from diagnosis where isDel = '0'")
             diagnosis = cur.fetchall()
@@ -618,7 +621,7 @@ def patientdiagnosisadd():
                         val = (patientid, type, name, quantity, float(rate['rate']))
                         if(cur.execute('''Insert into bill (patientid, type, name, quantity, rate) VALUES (%s, %s, %s, %s, %s)''', ( val ))):
                             mysql.connection.commit()
-                            flash('Added'+name, 'success')
+                            flash('Added '+name, 'success')
                         else:
                             flash('Something Went Wrong', 'danger')
                             return redirect(url_for('patientdiagnosisadd'))

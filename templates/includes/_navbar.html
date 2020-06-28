@@ -19,7 +19,7 @@
                             {% if session['userlevel'] == 'ade' %}
                                 <li>
                                     <a href="{{  url_for('createpatient')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-ios-create"></i>
                                         <span>Create Patient</span>
                                     </a>
                                 </li>
@@ -27,7 +27,7 @@
                             {% if session['userlevel'] == 'ade' %}
                                 <li>
                                     <a href="{{  url_for('updatepatient')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-md-create"></i>
                                         <span>Update Patient</span>
                                     </a>
                                 </li>
@@ -35,7 +35,7 @@
                             {% if session['userlevel'] == 'ade' %}
                                 <li>
                                     <a href="{{  url_for('deletepatient')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-md-trash"></i>
                                         <span>Delete Patient</span>
                                     </a>
                                 </li>
@@ -43,7 +43,7 @@
                             {% if session['userlevel'] == 'pharmacist' %}
                                 <li>
                                     <a href="{{  url_for('createmedicine')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-ios-create"></i>
                                         <span>Create Medicine</span>
                                     </a>
                                 </li>
@@ -51,7 +51,7 @@
                             {% if session['userlevel'] == 'pharmacist' %}
                                 <li>
                                     <a href="{{  url_for('updatemedicine')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-md-create"></i>
                                         <span>Update Medicine</span>
                                     </a>
                                 </li>
@@ -59,7 +59,7 @@
                             {% if session['userlevel'] == 'pharmacist' %}
                                 <li>
                                     <a href="{{  url_for('deletemedicine')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-md-trash"></i>
                                         <span>Delete Medicine</span>
                                     </a>
                                 </li>
@@ -67,7 +67,7 @@
                             {% if session['userlevel'] == 'pharmacist' %}
                                 <li>
                                     <a href="{{  url_for('viewmedicine')}}" class="waves-effect">
-                                        <i class="ti-home"></i>
+                                        <i class="ion ion-ios-copy"></i>
                                         <span>View Medicine</span>
                                     </a>
                                 </li>
@@ -83,7 +83,7 @@
                             {% if session['userlevel'] == 'dse' %}
                             <li>
                                 <a href="{{  url_for('creatediagnosis')}}" class="waves-effect">
-                                    <i class="ti-home"></i>
+                                    <i class="ion ion-ios-create"></i>
                                     <span>Create Diagnosis</span>
                                 </a>
                             </li>
@@ -91,7 +91,7 @@
                             {% if session['userlevel'] == 'dse' %}
                             <li>
                                 <a href="{{  url_for('updatediagnosis')}}" class="waves-effect">
-                                    <i class="ti-home"></i>
+                                    <i class="ion ion-md-create"></i>
                                     <span>Update Diagnosis</span>
                                 </a>
                             </li>
@@ -99,7 +99,7 @@
                             {% if session['userlevel'] == 'dse' %}
                             <li>
                                 <a href="{{  url_for('deletediagnosis')}}" class="waves-effect">
-                                    <i class="ti-home"></i>
+                                    <i class="ion ion-md-trash"></i>
                                     <span>Delete Diagnosis</span>
                                 </a>
                             </li>
@@ -107,7 +107,7 @@
                             {% if session['userlevel'] == 'dse' %}
                             <li>
                                 <a href="{{  url_for('viewdiagnosis')}}" class="waves-effect">
-                                    <i class="ti-home"></i>
+                                    <i class="ion ion-ios-copy"></i>
                                     <span>View Diagnosis</span>
                                 </a>
                             </li>
@@ -115,7 +115,7 @@
                         {% if session['userlevel'] == 'ade' or session['userlevel'] == 'dse' %}
                         <li>
                             <a href="{{  url_for('viewpatient')}}" class="waves-effect">
-                                <i class="ti-home"></i>
+                                <i class="ion ion-ios-document"></i>
                                 <span>View Patient</span>
                             </a>
                         </li>
@@ -123,7 +123,7 @@
                     {% if session['userlevel'] == 'ade' or session['userlevel'] == 'dse' %}
                         <li>
                             <a href="{{  url_for('singlepatient')}}" class="waves-effect">
-                                <i class="ti-home"></i>
+                                <i class="ion ion-md-paper-plane"></i>
                                 <span>Single Patient</span>
                             </a>
                         </li>
@@ -131,7 +131,7 @@
                             {% if session['userlevel'] == 'dse' %}
                             <li>
                                 <a href="{{  url_for('patientdiagnosisadd')}}" class="waves-effect">
-                                    <i class="ti-home"></i>
+                                    <i class="ion ion-ios-paper"></i>
                                     <span>Add Diagnosis to Patient</span>
                                 </a>
                             </li>
