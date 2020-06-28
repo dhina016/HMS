@@ -8,12 +8,12 @@
         <div class="card">
             <div class="card-body">
                 {% from "includes/_formhelper.html" import render_field %}
-                <form class="custom-validation" name="deletemedicine" action="" method="post" novalidate>
+                <form class="custom-validation" name="deletediagnosis" action="" method="post" novalidate>
                    {{  form.hidden_tag() }}
                     <div data-repeater-list="outer-group" class="outer">
                         <div data-repeater-item class="outer">
                             <div class="form-group">
-                                    {{ render_field( form.medicinename, placeholder="Enter Medicinename", class_="form-control" ) }}
+                                    {{ render_field( form.diagnosisname, placeholder="Enter diagnosisname", class_="form-control" ) }}
                                 </p>
                              </div>
                             <div id='sub'>
@@ -30,12 +30,12 @@
 
 <script>
        $(document).ready(function(){
-        $("#medicinename").on('change', () => {
+        $("#diagnosisname").on('change', () => {
             $.ajax({
                 type: "GET",
-                url: "getmedicinedetail",
+                url: "getdiagnosisdetail",
                 dataType: "json",
-                data: { mname: $('#medicinename').val() },
+                data: { mname: $('#diagnosisname').val() },
                 beforeSend: function() {},
                 success: (response) => {
                     console.log(response)

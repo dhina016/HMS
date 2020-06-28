@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <div class="card">
+            <div class="card-body">
+                    <form class="repeater" method="POST" action="">
+                        <div class="form-group">
+                            <label for="formcust_state">Select Patient  &nbsp; *</label>
+                            <select name="patientname" id="patientname" class="form-control input-lg" required>
+                                {% for id in patient %}
+                                <option value={{ id.patientid }}>({{ id.patientid }}) - {{ id.patientname }}</option>
+                                {% endfor %}
+                               </select>
+                            </div>
+                        <div data-repeater-list="group-a">
+                            <div data-repeater-item="" class="row" style="">
+                                <div class="form-group col-lg-2">
+                                    <label for="medicine">Medicine</label>
+                                    <select name="medicinename" id="medicinename" class="form-control input-lg" required>
+                                        {% for id in medicine %}
+                                        <option value={{ id.medicinename }}>{{ id.medicinename }} ( {{ id.quantity }}) </option>
+                                        {% endfor %}
+                                       </select>
+                                </div>
+
+                                <div class="form-group col-lg-2">
+                                    <label for="name">Quantity</label>
+                                    <input type="number" id="quantity" name="quantity" class="form-control" placeholder="Enter Quantity" min=1 required >
+                                </div>
+
+                                <div class="col-lg-2 align-self-center">
+                                    <input data-repeater-delete="" type="button" class="btn btn-primary btn-block" value="Delete">
+                                </div>
+                            </div></div>
+                        <input data-repeater-create="" type="button" class="btn btn-success mo-mt-2" value="Add">
+                        <input id="submit1" type="submit"  class="btn btn-primary mo-mt-2" value="Submit">
+                    </form>
+                </div>
+            </div>
+
+
+{% endblock %}
+

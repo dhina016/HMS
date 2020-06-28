@@ -37,3 +37,10 @@ class Medicine(FlaskForm):
 
 class DeleteMedicine(FlaskForm):
     medicinename = StringField("Name", [ validators.DataRequired(message="Name is Required") ])
+
+class Diagnosis(FlaskForm):
+    rate = IntegerField("Rate", [validators.DataRequired(message="Rate is Required"), validators.NumberRange(message='Minimum 1', min=1, max=999999999 ) ])
+    diagnosisname = StringField("Name", [ validators.DataRequired(message="Name is Required") ])
+
+class DeleteDiagnosis(FlaskForm):
+    diagnosisname = StringField("Name", [ validators.DataRequired(message="Name is Required") ])

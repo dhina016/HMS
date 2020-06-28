@@ -16,6 +16,9 @@
                                                     <th>Address</th>
                                                     <th>DOJ</th>
                                                     <th>Room Type</th>
+                                                    {% if session['userlevel'] == 'ade' %}
+                                                    <th>Action</th>
+                                                    {% endif %}
                                                 </tr>
                                                 </thead>
 
@@ -29,6 +32,11 @@
                                                     <td>{{ data.address }}</td>
                                                     <td>{{  (data.doj).strftime('%Y-%m-%d') }}</td>
                                                     <td>{{  data.type }}</td>
+                                                    {% if session['userlevel'] == 'ade' %}
+                                                    <td>
+                                                        <button type="button" class="btn btn-warning waves-effect waves-light" onclick="window.location='generatebill/{{ data.patientid }}'"><i class="fas fa-pencil-alt" onclick="return false;"></i></button> 
+                                                    </td>
+                                                    {% endif %}
                                                 </tr>
                                                 {%  endfor %}
                                                 </tbody>

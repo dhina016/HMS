@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xl-4 col-sm-4">
+        <div class="card mini-stat bg-primary text-white">
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5 class="font-size-16 text-uppercase mt-0 text-white-50">Total Patient</h5>
+                    <h4 class="font-weight-medium font-size-24">{{ patient.total }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-4">
+        <div class="card mini-stat bg-warning text-white">
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5 class="font-size-16 text-uppercase mt-0 text-white-50">Total Medicine</h5>
+                    <h4 class="font-weight-medium font-size-24">{{ medicine.total }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-sm-4">
+        <div class="card mini-stat bg-success text-white">
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5 class="font-size-16 text-uppercase mt-0 text-white-50">Total Diagnosis</h5>
+                    <h4 class="font-weight-medium font-size-24">{{ diagnosis.total }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

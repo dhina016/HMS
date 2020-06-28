@@ -107,61 +107,19 @@
          
          <script src="{{ url_for('static', filename='js/pages/form-advanced.init.js') }}"></script>
 
+         <!-- Sweet alert init js-->
+         <script src="{{ url_for('static', filename='js/pages/sweet-alerts.init.js') }}"></script>
 
          <!-- Datatable init js -->
          <script src="{{ url_for('static', filename='js/pages/datatables.init.js') }}"></script>
          <script src="{{ url_for('static', filename='libs/sweetalert2/sweetalert2.min.js') }}"></script>
+
+         <script src="{{ url_for('static', filename='libs/jquery.repeater/jquery.repeater.min.js') }}"></script>
+
+         <script src="{{ url_for('static', filename='js/pages/form-repeater.int.js') }}"></script>
  
-         <!-- Sweet alert init js-->
-         <script src="{{ url_for('static', filename='js/pages/sweet-alerts.init.js') }}"></script>
 
         <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-
-{% if(title[0] == 'Dashboard') %}      
-<script>
-
-  !(function (e) {
-      "use strict";
-      function a() {}
-        (a.prototype.createDonutChart = function (e, a, r) {
-          Morris.Donut({ element: e, data: a, resize: !0, colors: r });
-        }),
-        (a.prototype.createStackedChart = function (e, a, r, t, i, o) {
-          Morris.Bar({
-            element: e,
-            data: a,
-            xkey: r,
-            ykeys: t,
-            stacked: !0,
-            labels: i,
-            hideHover: "auto",
-            barSizeRatio: 0.4,
-            resize: !0,
-            gridLineColor: "rgba(108, 120, 151, 0.1)",
-            barColors: o,
-          });
-        }),
-        (a.prototype.init = function () {
-          this.createDonutChart(
-        "morris-donut-example",
-        [
-          { label: "{{ detail[0].t }}", value: "{{ detail[0].total }}" },
-          { label: "{{ detail[1].t }}", value: "{{ detail[1].total }}" },
-          { label: "{{ detail[2].t }}", value: "{{ detail[2].total }}" },
-        ],
-        ["#00ff00", "#3c4ccf", "#02a499"]
-      );
-        }),
-        (e.MorrisCharts = new a()),
-        (e.MorrisCharts.Constructor = a);
-    })(window.jQuery),
-      (function () {
-        "use strict";
-        window.jQuery.MorrisCharts.init();
-      })();
-
-</script>
-{% endif %}
 
     </body>
 

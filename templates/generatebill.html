@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if(patient) %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="invoice-title">
+                            <h3 class="mt-0">
+                                <img src="assets/images/logo-sm.png" alt="logo" height="24"/>
+                            </h3>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-6">
+                                <address>
+                                    <strong>Billed To:</strong><br>
+                                    {{ patient.patientname }}<br>
+                                    {{ patient.address }}<br>
+                                    {{ patient.state }}<br>
+                                    {{ patient.city }}
+                                </address>
+                            </div>
+                            <div class="col-6 text-right">
+                                <address>
+                                    <strong>From:</strong><br>
+                                    45<br>
+                                    Indian Pharmacy<br>
+                                    Tamilnadu<br>
+                                    India
+                                </address>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mt-4">
+                                <address>
+                                    <strong>Payment Method: Cash</strong><br>
+                                    <strong>Room Type: {{ patient.type }}</strong><br>
+                                </address>
+                            </div>
+                            <div class="col-6 mt-4 text-right">
+                                <address>
+                                    <strong>Order Date:</strong><br>
+                                    {{ extra.date }}<br><br>
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div>
+                            <div class="p-2">
+                                <h3 class="font-size-16"><strong>Summary</strong></h3>
+                            </div>
+                            <div class="">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <td><strong>Item</strong></td>
+                                            <td class="text-center"><strong>Price</strong></td>
+                                            <td class="text-center"><strong>Quantity</strong>
+                                            </td>
+                                            <td class="text-right"><strong>Totals</strong></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i in bill %}
+                                        <tr>
+                                            <td>{{ i.name }}</td>
+                                            <td class="text-center">₹{{ i.rate }}</td>
+                                            <td class="text-center">{{ i.quantity }}</td>
+                                            <td class="text-right">₹{{ i.quantity * i.rate }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                            <tr>
+                                                <td>{{ extra.rtype }}</td>
+                                                <td class="text-center">₹{{ extra.price }}</td>
+                                                <td class="text-center">{{ patient.totaldate }}</td>
+                                                <td class="text-right">₹{{ extra.price * patient.totaldate }}</td>
+                                            </tr>
+                                        <tr>
+                                            <td class="no-line"></td>
+                                            <td class="no-line"></td>
+                                            <td class="no-line text-center">
+                                                <strong>Total</strong></td>
+                                            <td class="no-line text-right"><h4 class="m-0">₹{{ extra.total }}</h4></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="d-print-none">
+                                    <div class="float-right">
+                                        <form action="" method="post">
+                                            <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light"><i class="fa fa-print"></i></a>
+                                            <input type="hidden" name="patientid" value="{{ patient.patientid }}">
+                                        <input type="submit"  class="btn btn-primary waves-effect waves-light" value="Submit">
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div> <!-- end row -->
+
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+{% else %}
+<div class="alert alert-warning bg-warning text-white border-0" role="alert"><strong>Patient is discharged or not found</strong> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> </div>
+{% endif %}
+{% endblock %}

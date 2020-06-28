@@ -43,6 +43,26 @@
             </div>
         </div>
     </div>
+  <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- end row -->
 
@@ -53,9 +73,34 @@
                 type: "GET",
                 url: "getpatientdetail",
                 dataType: "json",
-                data: { pid: $('#patientid').val() },
-                beforeSend: function() {},
+                data: { mname: $('#patientid').val() },
+                beforeSend: function() {
+                    $.ajax({
+                        type: "GET",
+                        url: "getbilldetail",
+                        dataType: "json",
+                        data: { mname: $('#patientid').val() },
+                        beforeSend: function() {},
+                        success: (response) => {
+                            console.log(response)
+                            if(response != null){
+                                output = ''
+                                $.each(response, function( index, value ) {
+                                    output += '<tr><td>'+value['name']+'</td><td>'+value['quantity']+'</td>'
+                                  })
+                                  $('#data').html('')
+                                  $('#data').html(output)
+                                } else {
+                                    $('#data').html('')
+                                }
+                        },
+                        error: (error) => {
+                            console.log(error)
+                        },
+                })
+                },
                 success: (response) => {
+                    console.log(response)
                     if(response != null){
                         $('#sid').text(response.ssnid)
                         $('#pid').text(response.patientid)
@@ -86,7 +131,7 @@
         });
      });
 
-       </script>
+</script>
        
 
 {% endblock %}

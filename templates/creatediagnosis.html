@@ -7,18 +7,14 @@
         <div class="card">
             <div class="card-body">
                 {% from "includes/_formhelper.html" import render_field %}
-                <form class="custom-validation" name="createmedicine" action="" method="post" novalidate>
+                <form class="custom-validation" name="creatediagnosis" action="" method="post" novalidate>
                    {{  form.hidden_tag() }}
                     <div data-repeater-list="outer-group" class="outer">
                         <div data-repeater-item class="outer">
                             <div class="form-group">
-                                    {{ render_field( form.medicinename, placeholder="Enter Medicine Name", class_="form-control" ) }}
+                                    {{ render_field( form.diagnosisname, placeholder="Enter Diagnosis Name", class_="form-control" ) }}
                                 </p>
                              </div>
-
-                            <div class="form-group">
-                                {{ render_field(form.quantity, placeholder="Enter Quantity", class_="form-control") }}
-                            </div>
                             <div class="form-group">
                                 {{ render_field(form.rate, placeholder="Enter Rate", class_="form-control") }}
                             </div>

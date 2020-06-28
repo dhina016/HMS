@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, request, render_template, flash, redirect, url_for, session, logging, jsonify
 from flask_mysqldb import MySQL
 from passlib.hash import sha256_crypt
-from form import LoginForm, CreatePatient, UpdatePatient, DeletePatient, Medicine, DeleteMedicine
+from form import LoginForm, CreatePatient, UpdatePatient, DeletePatient, Medicine, DeleteMedicine, Diagnosis, DeleteDiagnosis
 
 
 app = Flask(__name__)
@@ -18,15 +18,13 @@ mysql = MySQL(app)
 
 @app.route('/')
 def home():
-    cur = mysql.connection.cursor()
-    print(sha256_crypt.encrypt('Exec@1'))
-    cur.execute("SELECT * from users WHERE username = 'executive' AND isDel = '0' ")
-    detail = cur.fetchone()
-    return jsonify(detail)
+    return redirect(url_for('login'))
 
 #login
 @app.route('/login',methods=["GET","POST"])
 def login():
+    if session.get('logged_in'):
+        return redirect(url_for('logout'))
     form = LoginForm(request.form)
     if request.method == 'POST':
         username = request.form['username']
@@ -75,8 +73,19 @@ def logout():
 #dashboard
 @app.route('/dashboard')
 def dashboard():
-    title = ['Dashboard1', 'This is dashboard', '']
-    return render_template('createpatient.html',title=title)
+    if session.get('logged_in'):
+        title = ['Dashboard', 'This is Dashboard', ''] 
+        cur = mysql.connection.cursor()
+        cur.execute("select count(*) as total from patient where isDel = '0' ")
+        patient = cur.fetchone()
+        cur.execute("select count(*) as total from medicine where isDel = '0' ")
+        medicine = cur.fetchone()
+        cur.execute("select count(*) as total from diagnosis where isDel = '0' ")
+        diagnosis = cur.fetchone()
+        return render_template('dashboard.html',title=title, patient=patient, medicine=medicine, diagnosis=diagnosis)
+    else:
+        flash('Session Timeout', 'danger')
+        return redirect(url_for('login'))
 
 
 #Customer section
@@ -185,7 +194,7 @@ def deletepatient():
 @app.route('/viewpatient',methods=["GET","POST"])
 def viewpatient():
     if session.get('logged_in'):
-        if session.get('userlevel') == 'ade':
+        if session.get('userlevel') == 'ade' or session.get('userlevel') == 'dse':
             title = ['View Patient', 'This is View Patient', ''] 
             cur = mysql.connection.cursor()
             cur.execute("select * from patient where isDel = '0' ")
@@ -203,10 +212,74 @@ def viewpatient():
 @app.route('/singlepatient',methods=["GET","POST"])
 def singlepatient():
     if session.get('logged_in'):
-        if session.get('userlevel') == 'ade':
+        if session.get('userlevel') == 'ade' or session.get('userlevel') == 'dse':
             title = ['View Patient', 'This is create Patient', '']
             form = DeletePatient()
             return render_template('singlepatient.html',title=title, form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+
+#Customer section
+@app.route('/generatebill/<id>',methods=["GET","POST"])
+def generatebill(id):
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'ade':
+            cur = mysql.connection.cursor()
+            if request.method == 'POST':
+                id = request.form['patientid']
+                status = 'discharged'
+                check = cur.execute("UPDATE patient SET status = %s where patientid = %s", (status, id))
+                if(check):
+                    cur.execute("select * from bill where checkbill = 'not' AND patientid = %s",[id])
+                    bill = cur.fetchall()
+                    if(bill):
+                        status = 'billed'
+                        date = datetime.today().strftime('%Y-%m-%d')
+                        check = cur.execute("UPDATE bill SET checkbill = %s, billdate = %s where patientid = %s", (status, date, id))
+                        print(check)
+                        if(check):
+                            mysql.connection.commit()
+                            flash('Patient Discharged', 'success')
+                            return redirect(url_for('viewpatient'))
+                        else:
+                            flash('Something went wrong', 'danger')
+                            return redirect(url_for('viewpatient'))
+                    else:
+                        mysql.connection.commit()
+                        flash('Patient Discharged', 'success')
+                        return redirect(url_for('viewpatient'))
+                else:
+                    flash('Something went wrong', 'danger')
+                    return redirect(url_for('viewpatient'))
+            extra = {}
+            title = ['View Patient', 'This is create Patient', '']
+            date = datetime.today().strftime('%Y-%m-%d')
+            cur.execute("select *, DATEDIFF (%s, doj) as totaldate  from patient where isDel = '0' AND patientid = %s AND status='active'",[date,id])
+            patient = cur.fetchone()
+            cur.execute("select * from bill where checkbill = 'not' AND patientid = %s",[id])
+            bill = cur.fetchall()
+            if(patient):
+                if(patient['type'] == 'semi'):
+                    extra['rtype'] = 'Semi sharing'
+                    extra['price'] = 4000
+                elif(patient['type'] == 'general'):
+                    extra['rtype'] = 'General ward'
+                    extra['price'] = 2000
+                elif(patient['type'] == 'single'):
+                    extra['rtype'] = 'Single Room'
+                    extra['price'] = 8000
+                extra['date'] = date
+                total = 0
+                for i in bill:
+                    total += (int(i['quantity'])*float(i['rate']))
+                extra['total'] = total+ (float(extra['price'])*float(patient['totaldate']))
+            return render_template('generatebill.html',title=title, patient=patient, bill=bill, extra=extra)
         else:
             flash('Session Timeout', 'danger')
             return redirect(url_for('login'))
@@ -220,9 +293,9 @@ def singlepatient():
 @app.route('/getpatientdetail',methods=["GET"])
 def getpatientdetail():
     if session.get('logged_in'):
-        if  (session.get('userlevel') == 'ade'):
+        if(session.get('userlevel') == 'ade' or session.get('userlevel') == 'dse'):
             cur = mysql.connection.cursor()
-            cur.execute("SELECT * from patient where patientid = %s AND isDel = '0'", [ request.args.get('pid') ])
+            cur.execute("SELECT * from patient where patientid = %s AND isDel = '0' ", [ request.args.get('mname') ])
             detail = cur.fetchone()
             return jsonify(detail)
         else:
@@ -344,6 +417,55 @@ def viewmedicine():
         return redirect(url_for('logout'))
 
 
+@app.route('/patientmedicineadd', methods=['GET','POST'])
+def patientmedicineadd():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'pharmacist':
+            title = ['View Patient', 'This is View Patient', ''] 
+            cur = mysql.connection.cursor()
+            cur.execute("select * from medicine where isDel = '0' AND quantity > 0")
+            medicine = cur.fetchall()
+            cur.execute("select * from patient where isDel = '0' ")
+            patient = cur.fetchall()
+            if request.method == 'POST':
+                patientid = request.form['patientname']
+                type = 'medicine'
+                dup = []
+                for i in range((len(request.form)-1)//2):
+                    dup.append(request.form['group-a[{}][medicinename]'.format(i)])
+                if(len(dup) != len(set(dup))):
+                    flash('Duplicate medicine Found', 'danger')
+                    return redirect(url_for('patientmedicineadd'))
+                for i in range((len(request.form)-1)//2):
+                    name = request.form['group-a[{}][medicinename]'.format(i)]
+                    quantity = int(request.form['group-a[{}][quantity]'.format(i)])
+                    if(cur.execute("select rate,quantity from medicine where quantity >= %s AND medicinename = %s AND isDel ='0'",[quantity, name])):
+                        rate = cur.fetchone()
+                        total = float(rate['rate']) * quantity
+                        val = (patientid, type, name, quantity, total)
+                        if(cur.execute('''Insert into bill (patientid, type, name, quantity, rate) VALUES (%s, %s, %s, %s, %s)''', ( val ))):
+                            if(cur.execute("UPDATE medicine SET quantity = %s where medicinename = %s", ( int(rate['quantity'])-quantity, name  ))):
+                                mysql.connection.commit()
+                                flash('Added'+name, 'success')
+                            else:
+                                flash('Something Went Wrong', 'danger')
+                                return redirect(url_for('patientmedicineadd'))
+                        else:
+                            flash('Something Went Wrong', 'danger')
+                            return redirect(url_for('patientmedicineadd'))
+                    else:
+                        flash('Low Stock:'+name, 'danger')
+                
+                return redirect(url_for('patientmedicineadd'))
+            return render_template('patientmedicine.html',title=title, medicine=medicine, patient=patient)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
 @app.route('/getmedicinedetail',methods=["GET"])
 def getmedicinedetail():
     if session.get('logged_in'):
@@ -351,6 +473,189 @@ def getmedicinedetail():
             cur = mysql.connection.cursor()
             cur.execute("SELECT * from medicine where medicinename = %s AND isDel = '0'", [ request.args.get('mname') ])
             detail = cur.fetchone()
+            return jsonify(detail)
+        else:
+            return jsonify(None)
+    else:
+        return jsonify(None)
+
+
+
+#Diagnosis
+@app.route('/creatediagnosis',methods=["GET","POST"])
+def creatediagnosis():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'dse':
+            title = ['Create diagnosis', 'This is Create diagnosis', '']  
+            form = Diagnosis()
+            cur = mysql.connection.cursor()
+            if request.method == 'POST' and form.validate():
+                diagnosisname = request.form['diagnosisname']
+                rate = request.form['rate']
+                checkpatient = cur.execute("select diagnosisname from diagnosis where diagnosisname = %s ",[diagnosisname])
+                if checkpatient  == False:
+                    if(cur.execute('''Insert into diagnosis (diagnosisname, rate) VALUES (%s, %s)''', ( diagnosisname, rate ))):
+                        mysql.connection.commit()
+                        cur.close()
+                        flash('Created Successfully!!', 'success')
+                        return redirect(url_for('creatediagnosis'))
+                    else:
+                        flash('Something went wrong', 'danger')
+                        return redirect(url_for('creatediagnosis'))
+                else:
+                    flash('Medicine already exist', 'danger')
+                    return redirect(url_for('creatediagnosis'))
+            return render_template('creatediagnosis.html',title=title,form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+#Customer section
+@app.route('/updatediagnosis',methods=["GET","POST"])
+def updatediagnosis():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'dse':
+            title = ['Update Patient', 'This is create Patient', '']  
+            form = Diagnosis()
+            cur = mysql.connection.cursor()
+            if request.method == 'POST' and form.validate():
+                diagnosisname = request.form['diagnosisname']
+                rate = request.form['rate']
+                check = cur.execute("UPDATE diagnosis SET rate = %s where diagnosisname = %s", ( rate, diagnosisname))
+                if(check):
+                    mysql.connection.commit()
+                    cur.close()
+                    flash('Updated Successfully!!', 'success')
+                    return redirect(url_for('updatediagnosis'))
+                else:
+                    flash('Something went wrong', 'danger')
+                    return redirect(url_for('updatediagnosis'))
+            return render_template('updatediagnosis.html',title=title,form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+#Customer section
+@app.route('/deletediagnosis',methods=["GET","POST"])
+def deletediagnosis():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'dse':
+            title = ['Delete Patient', 'This is Delete Patient', '']  
+            form = DeleteDiagnosis()
+            cur = mysql.connection.cursor()
+            if request.method == 'POST' and form.validate():
+                diagnosisname = request.form['diagnosisname']
+                check = cur.execute("UPDATE diagnosis SET isDel = %s where diagnosisname = %s", ( '1', diagnosisname))
+                if(check):
+                    mysql.connection.commit()
+                    cur.close()
+                    flash('Deleted Successfully!!', 'success')
+                    return redirect(url_for('deletediagnosis'))
+                else:
+                    flash('Something went wrong', 'danger')
+                    return redirect(url_for('deletediagnosis'))
+
+            return render_template('deletediagnosis.html',title=title,form=form)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+#Customer section
+@app.route('/viewdiagnosis',methods=["GET","POST"])
+def viewdiagnosis():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'dse':
+            title = ['View Patient', 'This is View Patient', ''] 
+            cur = mysql.connection.cursor()
+            cur.execute("select * from diagnosis where isDel = '0' ")
+            detail = cur.fetchall()
+            return render_template('viewdiagnosis.html',title=title, detail=detail)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+@app.route('/patientdiagnosisadd', methods=['GET','POST'])
+def patientdiagnosisadd():
+    if session.get('logged_in'):
+        if session.get('userlevel') == 'dse':
+            title = ['View Patient', 'This is View Patient', ''] 
+            cur = mysql.connection.cursor()
+            cur.execute("select * from diagnosis where isDel = '0'")
+            diagnosis = cur.fetchall()
+            cur.execute("select * from patient where isDel = '0' ")
+            patient = cur.fetchall()
+            if request.method == 'POST':
+                print(request.form)
+                patientid = request.form['patientname']
+                type = 'diagnosis'
+                dup = []
+                for i in range(len(request.form)-1):
+                    dup.append(request.form['group-a[{}][diagnosisname]'.format(i)])
+                if(len(dup) != len(set(dup))):
+                    flash('Duplicate diagnosis Found', 'danger')
+                    return redirect(url_for('patientdiagnosisadd'))
+                for i in range(len(request.form)-1):
+                    name = request.form['group-a[{}][diagnosisname]'.format(i)]
+                    quantity = 1
+                    if(cur.execute("select rate from diagnosis where diagnosisname = %s AND isDel ='0'",[name])):
+                        rate = cur.fetchone()
+                        val = (patientid, type, name, quantity, float(rate['rate']))
+                        if(cur.execute('''Insert into bill (patientid, type, name, quantity, rate) VALUES (%s, %s, %s, %s, %s)''', ( val ))):
+                            mysql.connection.commit()
+                            flash('Added'+name, 'success')
+                        else:
+                            flash('Something Went Wrong', 'danger')
+                            return redirect(url_for('patientdiagnosisadd'))
+                    else:
+                        flash('Not Found:'+name, 'danger')
+                
+                return redirect(url_for('patientdiagnosisadd'))
+            return render_template('patientdiagnosis.html',title=title, diagnosis=diagnosis, patient=patient)
+        else:
+            flash('Session Timeout', 'danger')
+            return redirect(url_for('login'))
+    else:
+        flash('Access Denied', 'danger')
+        return redirect(url_for('logout'))
+
+
+@app.route('/getdiagnosisdetail',methods=["GET"])
+def getdiagnosisdetail():
+    if session.get('logged_in'):
+        if  (session.get('userlevel') == 'dse'):
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * from diagnosis where diagnosisname = %s AND isDel = '0'", [ request.args.get('mname') ])
+            detail = cur.fetchone()
+            return jsonify(detail)
+        else:
+            return jsonify(None)
+    else:
+        return jsonify(None)
+
+
+@app.route('/getbilldetail',methods=["GET"])
+def getbilldetail():
+    if session.get('logged_in'):
+        if (session.get('userlevel') == 'dse' or session.get('userlevel') == 'ade'):
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT * from bill where patientid = %s AND type='medicine' ", [ request.args.get('mname') ])
+            detail = cur.fetchall()
             return jsonify(detail)
         else:
             return jsonify(None)
