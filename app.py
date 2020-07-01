@@ -7,7 +7,7 @@ from form import LoginForm, CreatePatient, UpdatePatient, DeletePatient, Medicin
 
 
 app = Flask(__name__)
-
+app.secret_key = 'hms-secretkey'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_HOST'] = 'localhost'
