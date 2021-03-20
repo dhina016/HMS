@@ -9,7 +9,7 @@ Flask-WTF==0.14.3
 Frozen-Flask==0.15
 isort==4.3.21
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 lazy-object-proxy==1.4.3
 MarkupSafe==1.1.1
 marshmallow==3.6.1
